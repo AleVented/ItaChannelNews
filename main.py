@@ -10,9 +10,9 @@ Variabili d'ambiente:
   GEMINI_API_KEY    chiave gratuita da Google AI Studio
   GEMINI_MODEL      (opzionale) default gemini-2.0-flash, controlla il nome attuale
   IG_USER_ID        ID dell'account Instagram Business/Creator
-  IG_ACCESS_TOKEN   token Instagram (dura 60 giorni, poi va rigenerato)
-  IG_API_HOST       (opzionale) default graph.instagram.com; usa graph.facebook.com
-                    solo se hai un token di Pagina Facebook
+  IG_ACCESS_TOKEN   token di accesso della Pagina Facebook collegata a Instagram
+  IG_API_HOST       (opzionale) default graph.facebook.com; usa graph.instagram.com
+                    solo se hai un token di "Instagram Login"
   IG_HANDLE         (opzionale) es. @miopagina, mostrato nelle slide
   DRY_RUN=1         (opzionale) in publish non pubblica, stampa soltanto
   GITHUB_REPOSITORY, GITHUB_REF_NAME   impostate in automatico da GitHub Actions
@@ -125,7 +125,7 @@ Rispondi SOLO con JSON in questo formato:
   "slides": [{{"title": "max 40 caratteri", "text": "max 220 caratteri"}}, ... da 3 a 5 slide],
   "caption": "didascalia di 2-4 frasi, max 400 caratteri",
   "hashtags": ["#notizie", ... 5-8 hashtag pertinenti]}}"""
-    model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    model = os.getenv("GEMINI_MODEL") or "gemini-2.0-flash"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"responseMimeType": "application/json", "temperature": 0.4}}
@@ -291,8 +291,8 @@ def cmd_publish():
         return
     for u in urls:
         wait_url(u)
-    host = os.getenv("IG_API_HOST", "graph.instagram.com")  # login con Instagram
-    g = f"https://{host}/{os.getenv('IG_API_VERSION', 'v25.0')}"
+    host = os.getenv("IG_API_HOST") or "graph.facebook.com"
+    g = f"https://{host}/{os.getenv('IG_API_VERSION') or 'v25.0'}"
     uid, token = os.environ["IG_USER_ID"], os.environ["IG_ACCESS_TOKEN"]
 
     def call(method, path, **params):
