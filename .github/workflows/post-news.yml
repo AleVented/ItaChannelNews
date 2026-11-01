@@ -3,7 +3,6 @@ name: post-news
 on:
   schedule:
     - cron: "0 6 * * *"   # ogni giorno alle 06:00 UTC (07:00/08:00 in Italia)
-    - cron: "0 11 * * *"  # ogni giorno alle 11:00 UTC (12:00/13:00 in Italia)
     - cron: "0 18 * * *"  # ogni giorno alle 18:00 UTC (19:00/20:00 in Italia)
   workflow_dispatch:       # per lanciarlo a mano dal tab Actions
 
